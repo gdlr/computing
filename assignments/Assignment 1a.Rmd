@@ -1,0 +1,11 @@
+---
+title: "Assignment 1a"
+output: html_document
+---
+
+### Gabriel De La Rosa
+
+
+I heard about this course through the now defunct Environmental Data Science focus at Bren, and am taking it as a requirement. However, the more I've learned about coding the more I've realized that understanding how exactly a computer takes your inputs and processes the result is integral to coding well. You can speed things up, make things neat, but also really effectively troubleshoot problems if you know what's going on under the hood. I've also had to run scripts in a few different languages I don't know and was surprised at how much of the code I could understand. A course describing the underlying structure of coding language seems really useful for collaborating with others.
+
+I learned to code at Bren, but immediately liked it and sought out coding classes and projects during my time here. I've taken 204 and 244, but most of my coding experience has come from working on spatial data for a project with Phoebe Racine, a PhD student at Bren. I code in R daily, and have had to work with many different types of data with her job. I've run bash scripts, adapted python scripts in R, scraped tons of data, figured out parallel processing, and learned what coding is like when there's not an easy script to follow. Most recently, I built our GP's fishery model in R, using a mix of function calls and base r tricks to get it to spit out results. I wouldn't call myself an experienced coder, but I've gained significant coding experience in the last two years. Excited to learn more.
