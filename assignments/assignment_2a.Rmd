@@ -1,0 +1,69 @@
+---
+title: "Assignment 2"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(here)
+library(tidyverse)
+```
+
+# Automobile Power Generation
+
+by Anthony Luna, Gabriel De La Rosa, Mariano Viz, Claudia Flores
+
+
+
+
+```{r}
+# Make a function!
+##
+## Parameters
+##
+# g = gravity,
+# p_air = density of air
+# crolling = rolling drag coefficient
+# cdrag = aerodynamic drag coefficient
+##
+## Inputs
+##
+# m = car mass
+# V = car speed
+# A = surface area
+
+power_gen <- function(m, V, A, g = 9.8, p_air = 1.2, crolling = 0.015, cdrag = 0.3){
+  
+  Pb <- crolling * m * g * V + 0.5 * A * p_air * cdrag * V^3
+  # Output is the power output
+  return(Pb)
+}
+```
+
+
+
+```{r}
+# Source the function
+source(here("R", "power_gen.R"))
+
+# Run it for big and small cars
+big_car <- power_gen(V = c(30, 80, 120, 40), m = 31752, A = 9)
+
+small_car <- power_gen(V = c(30, 80, 120, 40), m = 31752*0.75, A = 9)
+```
+
+```{r}
+
+df <- tibble(speed = c(30, 80, 120, 40), big_car = big_car, small_car = small_car)
+
+ggplot(df) +
+  geom_line(aes(x = speed, y = big_car), color = "green") +
+  geom_line(aes(x = speed, y = small_car), color = "cyan") +
+  theme_bw() +
+  labs(title = "Power generation at different highway speeds",
+       x = "Speed (km/h)",
+       y = "Power (watts)")
+  
+
+```
+
