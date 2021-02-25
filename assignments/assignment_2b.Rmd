@@ -1,0 +1,141 @@
+---
+title: "Assignment 2b"
+output: html_document
+author: Anthony Luna, Mariano Viz, Gabriel De La Rosa, Claudia Flores
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(janitor)
+library(kableExtra)
+library(scales)
+library(here)
+library(ggbeeswarm)
+library(car)
+library(here)
+library(patchwork)
+
+source(here("R","power_gen.R"))
+```
+
+## Error Checking:
+
+Error checking was added to the function `power_gen.R`.
+
+
+```{r}
+# Recreate Possible Cars
+possible_cars = data.frame(
+  name = c("A","B","C","D"),
+  mass=c(10000,65000,38000,30000), 
+  area = c(22,30,22,10)
+  )
+
+# Creating the sample speeds with 
+# uniform distribution and values 
+# between 0.01 and 0.03
+set.seed(5)
+highway_samples <- runif(100,0.01,0.03)
+
+```
+
+
+## for loop:
+
+```{r}
+# Create a random sample of 100 random rolling coefficients with given values of min = 0.01 and max = 0.03
+rolling_coefficient = runif(n = 100, min = 0.01, max = 0.03)
+
+# Bring up a summary of statistics 
+summary(rolling_coefficient)
+
+# Plot a density plot
+plot(density(rolling_coefficient), 
+     ylab = "Distribution of Rolling Coefficients"
+     )
+
+### Create a Data Frame for 'for loop'
+# Create a data frame with row length 100 (same as rolling_coefficient) and column width 4 (same as possible_cars)
+
+powerall4 = as.data.frame(matrix(nrow = length(rolling_coefficient), 
+                                 ncol=nrow(possible_cars)))
+# Adding column names to data frame powerall4 using the possible_cars data frame column names
+colnames(powerall4)= possible_cars$name
+
+### 'For loop' using the power_gen() function
+# Indexing into a matrix (powerall4) by row and column 
+
+for (i in 1:nrow(possible_cars)) 
+  {
+  powerall4[,i] = 
+    power_gen(A=possible_cars$area[i], 
+              m=possible_cars$mass[i], 
+              V=120*0.28, 
+              crolling = rolling_coefficient
+              )
+  }
+
+### Plotting
+
+# Turn columns into rows
+powerall4 = powerall4 %>% 
+  pivot_longer(cols = everything(), names_to = "car", values_to = "power")
+
+# Box-Plot Plot for powerall4 data frame
+
+loop_plot = ggplot(powerall4, 
+  aes(x = car, 
+      y= power, 
+      fill=car)) +
+  geom_boxplot() +
+  labs(title = "Power for Four Types of Cars - For Loop", 
+       y = "Car", 
+       x = "Power (Watts)", 
+       fill = "Car") +
+  theme_bw()
+
+# Call the plot
+loop_plot
+```
+
+## pmap:
+
+```{r pmap_section}
+
+#Here is the pmap function
+all_croll_pmap_list <- pmap(
+# This list provides the independent variables that are like parameters
+  list(
+    A=possible_cars$area,
+    m=possible_cars$mass,
+    V=120/3.6
+    ),
+# This is the function used to calculate the dependent variable
+  power_gen,
+# This is the sample that acts as the random inputs for highway characteristics
+  crolling = highway_samples
+)
+
+
+all_croll_pmap <- as.data.frame(
+# The list made above is coerced into a data frame
+  all_croll_pmap_list,
+# Columns are the piece wise elements in the list
+  col.names=possible_cars$name
+) %>% 
+# pivot_longer to make the data play nice with ggplot
+  pivot_longer(everything(),names_to = "car",values_to = "power")
+
+# Here is the plot for later use with ggarrange
+all_croll_pmap_plot <- ggplot(data = all_croll_pmap, aes(car,power,fill=car)) +
+  geom_boxplot() +
+  labs(title = "Power for Four Types of Cars - pmap()", 
+       y = "Car", 
+       x = "Power (Watts)", 
+       fill = "Car") +
+  theme_bw()
+
+all_croll_pmap_plot
+
+```
