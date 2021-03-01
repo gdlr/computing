@@ -1,0 +1,72 @@
+---
+title: "Assignment 3"
+output: html_document
+author: Gabriel De La Rosa
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(sf)
+library(raster)
+```
+
+
+
+## While loop:
+
+Let's make a function that calculates how many years it takes a fishery to get to carrying capacity :
+
+Inputs are:
+
+- starting stock
+- r = intrinsic growth rate
+- K = carrying capacity
+
+
+```{r}
+fish_model <- function(starting_stock, r, K){
+    # Set the initial starting stock
+    prev_stock <- starting_stock
+    runs <- 0
+    
+    # Create an iterative for loop that'll sequentially run this...
+    while(prev_stock < (K-0.1)){
+      # Calculate the new stock based on logistic growth minus harvest
+      new_stock <- prev_stock + (r * prev_stock) * (1 - (prev_stock/K))
+      prev_stock <- new_stock
+      # Calculate how many times the loop has run
+      runs <- runs+1
+    }
+  return(runs)
+  }
+```
+
+### Now, we can run it...
+```{r}
+fish_model(50, 0.2, 100)
+```
+
+
+## Case When:
+
+Let's build a new function that figures out whether a grade is high, average, or low:
+
+```{r}
+grade_fx <- function(grade){
+  # Return whether a grade is high, medium, or low
+  class <- case_when(grade > 100 ~ "grade above 100",
+                     grade >= 90 ~ "high",
+                     grade < 90 & grade >= 75 ~ "average",
+                     grade < 75 ~ "low",
+                     grade < 0 ~ "grade below zero")
+  return(class)
+}
+
+grade_fx(c(92, 35, 32, 108))
+
+```
+
+
+
