@@ -28,7 +28,10 @@ fish_model <- function(starting_stock, r, K){
     # Set the initial starting stock
     prev_stock <- starting_stock
     runs <- 0
-    
+    if(starting_stock<=0){
+      return("starting stock out of bounds!")
+    }
+    else{
     # Create an iterative for loop that'll sequentially run this...
     while(prev_stock < (K-0.1)){
       # Calculate the new stock based on logistic growth minus harvest
@@ -37,13 +40,14 @@ fish_model <- function(starting_stock, r, K){
       # Calculate how many times the loop has run
       runs <- runs+1
     }
+    }
   return(runs)
   }
 ```
 
 ### Now, we can run it...
 ```{r}
-fish_model(50, 0.2, 100)
+fish_model(5, 0.2, 100)
 ```
 
 
