@@ -8,8 +8,6 @@ author: Gabriel De La Rosa
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
-library(sf)
-library(raster)
 ```
 
 
